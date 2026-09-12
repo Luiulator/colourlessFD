@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this software in your research or project, please cite it as below."
+title: "StableFluids.jl: Unconditionally Stable 2D Fluid Simulation in Julia"
+version: 0.1.0
+date-released: 2026-09-10
+authors:
+  - name: "luinux"
+license: "MIT"
+repository-code: "https://github.com/luinux/StableFluids.jl"
+keywords:
+  - "fluid-dynamics"
+  - "navier-stokes"
+  - "stable-fluids"
+  - "jos-stam"
+  - "julia"
+  - "computational-physics"
