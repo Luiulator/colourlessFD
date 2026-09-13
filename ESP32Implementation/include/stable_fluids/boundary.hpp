@@ -1,6 +1,6 @@
 #pragma once
 
-#include "types.hpp"
+#include <cstddef>
 
 /* 
 Por suerte para mí en C++ se pueden usar ternarios como en Julia
