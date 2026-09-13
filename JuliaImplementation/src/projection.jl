@@ -24,9 +24,9 @@ function project!(u::Matrix{T}, v::Matrix{T}, p::Matrix{T}, div::Matrix{T}, para
         @inbounds for i in 2:nx+1
             # Divergencia por diferencias finitas centrales
             div[i, j] = -T(0.5) * dx * (
-                (u[i+1, j] - u[i-1, j]) +
-                (v[i, j+1] - v[i, j-1])
-            )
+                            (u[i+1, j] - u[i-1, j]) +
+                            (v[i, j+1] - v[i, j-1])
+                        )
             # Inicializamos la presión estimada en cero
             p[i, j] = zero(T)
         end
