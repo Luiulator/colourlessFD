@@ -18,7 +18,7 @@ void step(FluidGrid2D<NX, NY>& grid, int iter = 20) {
     diffuse(grid.v, grid.v_prev, params.visc, 2, params, iter);
   }
 
-  project(grid.u, grid.v, grid.p, grid.div, params, iter = iter);
+  project(grid.u, grid.v, grid.p, grid.div, params, iter);
 
   std::memcpy(grid.u_prev, grid.u, sizeof(grid.u));
   std::memcpy(grid.v_prev, grid.v, sizeof(grid.v));
@@ -30,8 +30,7 @@ void step(FluidGrid2D<NX, NY>& grid, int iter = 20) {
 
   if (params.diff > 0.0f) {
     std::memcpy(grid.density_prev, grid.density, sizeof(grid.density));
-    diffuse(grid.density, grid.density_prev, params.diff, 0, params,
-            iter = iter);
+    diffuse(grid.density, grid.density_prev, params.diff, 0, params, iter);
   }
 
   std::memcpy(grid.density_prev, grid.density, sizeof(grid.density));

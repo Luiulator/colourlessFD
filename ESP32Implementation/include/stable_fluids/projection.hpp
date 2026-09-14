@@ -17,14 +17,14 @@ void project(float (&u)[NX + 2][NY + 2], float (&v)[NX + 2][NY + 2],
     for (size_t j = 1; j <= NY; j++) {
 
       div[i][j] = -0.5f * dx *
-                  ((u[i + 1][j] - v[i - 1][j]) + (v[i][j + 1] - v[i][j - 1]));
+                  ((u[i + 1][j] - u[i - 1][j]) + (v[i][j + 1] - v[i][j - 1]));
 
       p[i][j] = 0.0f;
     }
   }
 
-  set_bnd<NX, NY>(div, 0);
-  set_bnd<NX, NY>(p, 0);
+  set_bnd<NX, NY>(0, div);
+  set_bnd<NX, NY>(0, p);
 
   /*
   void lin_solve(int b, float (&x)[NX+2][NY+2], const float (&x0)[NX+2][NY+2],
@@ -36,19 +36,19 @@ void project(float (&u)[NX + 2][NY + 2], float (&v)[NX + 2][NY + 2],
     a:=peso de  los vecinos
     c:= número de vecinos (4 en 2D)
   */
-  lin_solve<NX, NY>(0, p, div, 1.0f, 4.0f, 0, params, iters = iters);
+  lin_solve<NX, NY>(0, p, div, 1.0f, 4.0f, iters);
 
   float inv_dx = 0.5f / dx;
 
   for (size_t i = 1; i <= NX; i++) {
-    for (size_t j = 1; i <= NY; j++) {
+    for (size_t j = 1; j <= NY; j++) {
       u[i][j] -= inv_dx * (p[i + 1][j] - p[i - 1][j]);
       v[i][j] -= inv_dx * (p[i][j + 1] - p[i][j - 1]);
     }
   }
 
-  set_bnd<NX, NY>(u, 1);
-  set_bnd<NX, NY>(v, 2);
+  set_bnd<NX, NY>(1, u);
+  set_bnd<NX, NY>(2, v);
 };
 
 } // namespace stable_fluids
