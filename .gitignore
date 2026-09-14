@@ -35,3 +35,37 @@ Thumbs.db
 *.csv
 scratch/
 tmp/
+
+# C/C++ Build Artifacts & Binaries
+*.o
+*.obj
+*.slo
+*.lo
+*.a
+*.lib
+*.so
+*.so.*
+*.dylib
+*.dll
+*.gch
+*.pch
+*.d
+*.out
+*.exe
+*.elf
+*.bin
+*.hex
+test_bin
+
+# C/C++ Build Directories & Language Server Cache
+build/
+bin/
+obj/
+out/
+cmake-build-*/
+.cache/
+
+# Embedded / PlatformIO / ESP32
+.pio/
+sdkconfig.old
+
