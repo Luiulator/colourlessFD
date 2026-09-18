@@ -5,16 +5,20 @@ using StableFluids
 using GLMakie
 
 function run_simulation()
-    nx, ny = 200, 200
+    nx, ny = 300, 300
     grid = FluidGrid2D(nx, ny; dt=0.016f0, visc=1.0f0, diff=0.5f0)
+
+    # Radios adaptativos proporcionales a la resolución de la malla
+    min_dim = min(nx, ny)
+    smoke_radius = max(1, round(Int, 0.03f0 * min_dim))   # ~3% del dominio (ej. 6 en 200x200, 2 en 50x50)
+    brush_radius = max(1, round(Int, 0.025f0 * min_dim))  # ~2.5% del dominio (ej. 5 en 200x200, 1 en 50x50)
 
     # Inyección de humo inicial
     center_x, center_y = nx / 2, ny / 2
-    radius = 6
     for j in 2:ny+1
         for i in 2:nx+1
             dist2 = (i - 1 - center_x)^2 + (j - 1 - center_y)^2
-            if dist2 <= radius^2
+            if dist2 <= smoke_radius^2
                 grid.density[i, j] = 1.0f0
             end
         end
@@ -22,10 +26,8 @@ function run_simulation()
 
     
     display_buffer = Observable(copy(grid.density[2:nx+1, 2:ny+1]))
-    title_obs = Observable(" ")
+    title_obs = Observable("FPS: --")
     
-    
-
     fig = Figure(backgroundcolor=:black)
     ax = Axis(fig[1, 1], aspect=DataAspect(),
         title=title_obs,
@@ -47,6 +49,8 @@ function run_simulation()
     =#
 
     prev_mouse = nothing
+    last_time = time()
+    frame_count = 0
 
     while isopen(screen)
         # 1. Lectura del teclado con WASD
@@ -59,7 +63,6 @@ function run_simulation()
             mp = mouseposition(ax.scene)
             mx, my = Float32(mp[1]), Float32(mp[2])
             cx, cy = round(Int, mx), round(Int, my)
-            brush_radius = 5
 
             # Calcular el desplazamiento del ratón para inducir advección
             if prev_mouse !== nothing
@@ -101,9 +104,9 @@ function run_simulation()
 
         # Inyectar con la barra espaciadora
         if ispressed(fig, Makie.Keyboard.space)
-            for j in max(2, center_y - radius):min(ny + 1, center_y + radius)
-                for i in max(2, center_x - radius):min(nx + 1, center_x + radius)
-                    if ((i - 1 - center_x)^2 + (j - 1 - center_y)^2) <= radius^2
+            for j in max(2, round(Int, center_y - smoke_radius + 1)):min(ny + 1, round(Int, center_y + smoke_radius + 1))
+                for i in max(2, round(Int, center_x - smoke_radius + 1)):min(nx + 1, round(Int, center_x + smoke_radius + 1))
+                    if ((i - 1 - center_x)^2 + (j - 1 - center_y)^2) <= smoke_radius^2
                         grid.density[i, j] = 4.0f0
                     end
                 end
@@ -119,9 +122,18 @@ function run_simulation()
         # 4. Actualizar visualización
         display_buffer[] = grid.density[2:nx+1, 2:ny+1]
 
+        # 5. Contador de FPS
+        frame_count += 1
+        t_now = time()
+        elapsed = t_now - last_time
+        if elapsed >= 0.25
+            fps = frame_count / elapsed
+            title_obs[] = string("FPS: ", round(fps, digits=1))
+            frame_count = 0
+            last_time = t_now
+        end
 
-
-        sleep(0.016)
+        sleep(0.001)
     end
 end
 
