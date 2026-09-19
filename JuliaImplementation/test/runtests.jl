@@ -133,6 +133,18 @@ using StableFluids
         @test grid.u[2, 2] == 0.0f0 # Sin densidad no hay aceleración
     end
 
+    @testset "Disipación / Decaimiento de Humo (dissipate_density!)" begin
+        nx, ny = 16, 16
+        grid = FluidGrid2D(nx, ny)
+        grid.density[8, 8] = 2.0f0
+
+        dissipate_density!(grid; decay=0.9f0)
+        @test grid.density[8, 8] ≈ 1.8f0
+
+        # Celdas vacías siguen en cero
+        @test grid.density[2, 2] == 0.0f0
+    end
+
     @testset "Ciclo Completo y Estabilidad Numérica (step!)" begin
         nx, ny = 32, 32
         grid = FluidGrid2D(nx, ny; dt=0.016f0, visc=0.01f0, diff=0.01f0)

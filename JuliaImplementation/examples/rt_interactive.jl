@@ -5,8 +5,8 @@ using StableFluids
 using GLMakie
 
 function run_simulation()
-    nx, ny = 300, 300
-    grid = FluidGrid2D(nx, ny; dt=0.016f0, visc=1.0f0, diff=0.5f0)
+    nx, ny = 200, 200
+    grid = FluidGrid2D(nx, ny; dt=0.016f0, visc=0.0f0, diff=0.0f0)
 
     # Radios adaptativos proporcionales a la resolución de la malla
     min_dim = min(nx, ny)
@@ -90,16 +90,16 @@ function run_simulation()
         end
 
         if ispressed(fig, Makie.Keyboard.a)
-            gx -= 35.0f0
+            gx = -100.0f0
         end
         if ispressed(fig, Makie.Keyboard.d)
-            gx += 35.0f0
+            gx = 100.0f0
         end
         if ispressed(fig, Makie.Keyboard.w)
-            gy = 25.0f0   # Poner boca arriba / acelerar hacia el techo
+            gy = 100.0f0   # Poner boca arriba / acelerar hacia el techo
         end
         if ispressed(fig, Makie.Keyboard.s)
-            gy = -35.0f0  # Fuerte aceleración hacia el suelo
+            gy = -100.0f0  # Fuerte aceleración hacia el suelo
         end
 
         # Inyectar con la barra espaciadora
@@ -117,7 +117,10 @@ function run_simulation()
         add_buoyancy!(grid; gx=gx, gy=gy)
 
         # 3. Paso de simulación completo
-        step!(grid)
+        step!(grid, iter = 30)
+
+        # 3.1 Disipación / decaimiento natural del humo
+        dissipate_density!(grid; decay=0.995f0)
 
         # 4. Actualizar visualización
         display_buffer[] = grid.density[2:nx+1, 2:ny+1]

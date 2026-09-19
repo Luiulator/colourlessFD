@@ -1,7 +1,7 @@
 module StableFluids
 
 export FluidParams, FluidGrid2D
-export step!, add_buoyancy!, diffuse!, advect!, project!, lin_solve!, set_bnd!
+export step!, add_buoyancy!, dissipate_density!, diffuse!, advect!, project!, lin_solve!, set_bnd!
 
 include("types.jl")
 include("forces.jl")
