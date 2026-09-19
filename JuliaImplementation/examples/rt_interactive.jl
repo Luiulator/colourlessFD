@@ -24,10 +24,10 @@ function run_simulation()
         end
     end
 
-    
+
     display_buffer = Observable(copy(grid.density[2:nx+1, 2:ny+1]))
     title_obs = Observable("FPS: --")
-    
+
     fig = Figure(backgroundcolor=:black)
     ax = Axis(fig[1, 1], aspect=DataAspect(),
         title=title_obs,
@@ -38,24 +38,16 @@ function run_simulation()
     heatmap!(ax, display_buffer, colormap=:grays, colorrange=(0.0f0, 1.0f0), interpolate=false)
     screen = display(fig)
 
-    #=
-    println("==========================================================")
-    println("Simulación interactiva:")
-    println(" • Click + Arrastre : Inyectar densidad e inducir velocidad/advección")
-    println(" • A / D : Inclinar a la izquierda / derecha (IMU X)")
-    println(" • W / S : Inclinar hacia arriba / abajo (IMU Y)")
-    println(" • ESPACIO : Inyectar nueva nube de gas")
-    println("==========================================================")
-    =#
+
 
     prev_mouse = nothing
     last_time = time()
     frame_count = 0
 
     while isopen(screen)
-        # 1. Lectura del teclado con WASD
+
         gx = 0.0f0
-        gy = -15.9f0  # Gravedad natural hacia abajo en reposo
+        gy = -15.9f0
 
 
 
@@ -64,7 +56,7 @@ function run_simulation()
             mx, my = Float32(mp[1]), Float32(mp[2])
             cx, cy = round(Int, mx), round(Int, my)
 
-            # Calcular el desplazamiento del ratón para inducir advección
+
             if prev_mouse !== nothing
                 dx_drag = mx - prev_mouse[1]
                 dy_drag = my - prev_mouse[2]
@@ -74,7 +66,7 @@ function run_simulation()
             end
             prev_mouse = (mx, my)
 
-            force_scale = 15.0f0  # Escala de fuerza aplicada por el arrastre
+            force_scale = 15.0f0
 
             for j in max(2, cy - brush_radius + 1):min(ny + 1, cy + brush_radius + 1)
                 for i in max(2, cx - brush_radius + 1):min(nx + 1, cx + brush_radius + 1)
@@ -96,13 +88,12 @@ function run_simulation()
             gx = 100.0f0
         end
         if ispressed(fig, Makie.Keyboard.w)
-            gy = 100.0f0   # Poner boca arriba / acelerar hacia el techo
+            gy = 100.0f0
         end
         if ispressed(fig, Makie.Keyboard.s)
-            gy = -100.0f0  # Fuerte aceleración hacia el suelo
+            gy = -100.0f0
         end
 
-        # Inyectar con la barra espaciadora
         if ispressed(fig, Makie.Keyboard.space)
             for j in max(2, round(Int, center_y - smoke_radius + 1)):min(ny + 1, round(Int, center_y + smoke_radius + 1))
                 for i in max(2, round(Int, center_x - smoke_radius + 1)):min(nx + 1, round(Int, center_x + smoke_radius + 1))
@@ -113,19 +104,19 @@ function run_simulation()
             end
         end
 
-        # 2. Aplicar la aceleración vectorial de la IMU al gas
+
         add_buoyancy!(grid; gx=gx, gy=gy)
 
-        # 3. Paso de simulación completo
-        step!(grid, iter = 30)
 
-        # 3.1 Disipación / decaimiento natural del humo
+        step!(grid, iter=30)
+
+
         dissipate_density!(grid; decay=0.995f0)
 
-        # 4. Actualizar visualización
+
         display_buffer[] = grid.density[2:nx+1, 2:ny+1]
 
-        # 5. Contador de FPS
+
         frame_count += 1
         t_now = time()
         elapsed = t_now - last_time
@@ -140,5 +131,5 @@ function run_simulation()
     end
 end
 
-# Ejecutar automáticamente al invocar el script
+
 run_simulation()
