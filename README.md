@@ -11,15 +11,15 @@ $$ \nabla \cdot \mathbf{u} = 0 $$
 
 $$ \frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u} \cdot \nabla) \mathbf{u} = \nu \nabla^2 \mathbf{u} - \frac{1}{\rho} \nabla p + \mathbf{f} $$
 
-and also an equation for transporting the dye
+and also an equation for transporting the density (which works as a dye)
 
 $$ \frac{\partial \rho}{\partial t} + (\mathbf{u} \cdot \nabla) \rho = \kappa \nabla^2 \rho + S $$
 
 It does so by breaking down each term of the sum and solving them separately, then summing up. Lastly, it applies a correction pressure so that we enforce that the fluid remains incompressible.
 
-Lastly, Stable Fluids is, as per its name, uncondi1tionally stable. That means you won't get infinite velocities under any time step.
+Lastly, Stable Fluids is, as per its name, unconditionally stable. That means you won't get infinite velocities under any circumstance, no matter how big the time step. However, my testing shows that increasing the time step too much does away with Stable Fluid's distinctive vortices.
 
-*Be advised!!!* As a tradeoff for unconditional stability, the semi-Lagrangian advection method introduces numerical diffusion (artificial smoothing). You should expect smooth, highly aesthetic fluid-like motion with swirling vortices, but do not use it for high-precision aerodynamic or CFD simulations.
+*Be advised!!!* As a tradeoff for unconditional stability, the semi-Lagrangian advection method foregoes true physical realism. It is, by all accounts, just a mathematical trick that happens to get the job done, and not a faithful reflection of reality. You should expect smooth, highly aesthetic fluid-like motion with swirling vortices, but do not use it for high-precision CFD simulations because it will not accurately represent reality.
 
 ---
 
