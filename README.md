@@ -8,23 +8,16 @@ A pure Julia implementation of Jos Stam's [Stable Fluids](https://www.dgp.toront
 
 This package solves the incompressible 2D Navier-Stokes equations for fluid flow:
 
-**Continuity Equation (Incompressibility):**
 $$ \nabla \cdot \mathbf{u} = 0 $$
 
-**Momentum Equation:**
 $$ \frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u} \cdot \nabla) \mathbf{u} = \nu \nabla^2 \mathbf{u} - \frac{1}{\rho} \nabla p + \mathbf{f} $$
 
-**Dye / Smoke Transport:**
+and also an equation for transporting the dye
 $$ \frac{\partial \rho}{\partial t} + (\mathbf{u} \cdot \nabla) \rho = \kappa \nabla^2 \rho + S $$
 
-It operates via operator splitting, advancing each physical step independently within each time frame:
-1. **External Forces:** Adding body forces (e.g. gravitational buoyancy, IMU tilt, or user mouse impulses) to the velocity field.
-2. **Viscous Diffusion:** Implicit solver for fluid viscosity using Gauss-Seidel relaxation.
-3. **Pressure Projection:** Solving the Poisson equation ($\nabla^2 p = \nabla \cdot \mathbf{u}^*$) via Helmholtz-Hodge decomposition to ensure a divergence-free velocity field.
-4. **Semi-Lagrangian Advection:** Unconditionally stable back-tracing of streamlines with bilinear interpolation to transport velocities and scalar densities.
-5. **Density Diffusion & Dissipation:** Transporting and gradually decaying smoke concentration to keep high contrast and prevent saturation.
+It does so by breaking down each term of the sum and solving them separately, then summing up. Lastly, it applies a correction pressure so that we enforce that the fluid remains incompressible.
 
-Lastly, Stable Fluids is, as per its name, unconditionally stable. That means you won't get infinite velocities under any time step.
+Lastly, Stable Fluids is, as per its name, uncondi1tionally stable. That means you won't get infinite velocities under any time step.
 
 *Be advised!!!* As a tradeoff for unconditional stability, the semi-Lagrangian advection method introduces numerical diffusion (artificial smoothing). You should expect smooth, highly aesthetic fluid-like motion with swirling vortices, but do not use it for high-precision aerodynamic or DNS CFD simulations.
 
@@ -63,5 +56,5 @@ A list of optimizations and features I want to add to this:
 
 - Multi-threaded **Red-Black Gauss-Seidel** solver with `@simd` vectorization for high-resolution real-time grids ($500 \times 500+$).
 - GPU acceleration using `KernelAbstractions.jl` / `CUDA.jl`.
-- **Vorticity Confinement** (Fedkiw et al.) to counteract numerical dissipation and preserve fine turbulent swirls.
+- **Vorticity Confinement** to counteract numerical dissipation and preserve fine turbulent swirls.
 - Extension to 3D grid volumes with volumetric rendering.
