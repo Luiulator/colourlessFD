@@ -1,7 +1,6 @@
-# [StableFluids.jl](https://github.com/luinux/StableFluids.jl)
+# StableFluids.jl
 
 A pure Julia implementation of Jos Stam's [Stable Fluids](https://www.dgp.toronto.edu/public_user/stam/reality/Research/pdf/ns.pdf) algorithm (1999/2003), widely used in computer graphics and games to simulate smoke, fire, and gaseous phenomena in real time. It is lightweight, unconditionally stable, and serves as the reference implementation and playground for embedded ports like [ESP32-stableFluids](https://github.com/Luiulator/ESP32-stableFluids).
-
 
 
 ## A few Highlights
