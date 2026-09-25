@@ -20,7 +20,7 @@ It does so by breaking down each term of the sum and solving them separately, th
 
 Lastly, Stable Fluids is, as per its name, uncondi1tionally stable. That means you won't get infinite velocities under any time step.
 
-*Be advised!!!* As a tradeoff for unconditional stability, the semi-Lagrangian advection method introduces numerical diffusion (artificial smoothing). You should expect smooth, highly aesthetic fluid-like motion with swirling vortices, but do not use it for high-precision aerodynamic or DNS CFD simulations.
+*Be advised!!!* As a tradeoff for unconditional stability, the semi-Lagrangian advection method introduces numerical diffusion (artificial smoothing). You should expect smooth, highly aesthetic fluid-like motion with swirling vortices, but do not use it for high-precision aerodynamic or CFD simulations.
 
 ---
 
